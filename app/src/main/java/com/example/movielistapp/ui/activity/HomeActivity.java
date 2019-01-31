@@ -29,8 +29,6 @@ public class HomeActivity extends BaseActivity implements MoviesListPresenter.Vi
         registerClickListener();
         fetchAllMovies();
 
-
-
     }
 
     private void initObjects() {
@@ -54,6 +52,9 @@ public class HomeActivity extends BaseActivity implements MoviesListPresenter.Vi
 
     @Override
     public void onShowAllMoviesList(List<MainResponse> list) {
+        if(null != list && list.size()>0){
+
+        }
 
     }
 

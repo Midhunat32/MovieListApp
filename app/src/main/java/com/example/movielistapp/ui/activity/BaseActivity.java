@@ -14,6 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 public abstract class BaseActivity extends AppCompatActivity {
 
 
+
+
     public void loadFragment(Fragment fragment, boolean addToBackstack) {
 
         FragmentManager fragmentManager = getSupportFragmentManager();

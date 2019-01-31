@@ -9,7 +9,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        it.buildConfigField('String', 'BASE_URL','"https://developers.themoviedb.org/"')
+        it.buildConfigField('String', 'BASE_URL','"https://api.themoviedb.org/"')
         it.buildConfigField('String', 'API_KEY','"c89f8bf7f35b5b719c2031faf290efeb"')
     }
     buildTypes {
