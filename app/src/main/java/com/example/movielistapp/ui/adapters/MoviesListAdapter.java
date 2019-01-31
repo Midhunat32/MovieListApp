@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 
 import com.example.movielistapp.R;
-import com.example.movielistapp.cloud.responsemodel.Result;
+import com.example.movielistapp.cloud.Result;
 import com.example.movielistapp.utility.ClickListener;
 
 import java.util.List;
@@ -58,7 +58,7 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Vi
         }
         public void onBind(final int position){
             movieItem = moviesList.get(position);
-            tvMoviesName.setText(movieItem.getTitle());
+            tvMoviesName.setText(movieItem.getId());
             layoutMain.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

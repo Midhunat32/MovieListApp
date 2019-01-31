@@ -22,19 +22,19 @@ public class MoviesListPresenterImpl implements MoviesListPresenter.Presenter {
     public void fetchAllMovies(MoviesListPresenter.View mView) {
         if (mView!=null){
             CloudManager manager = AppCloudClient.getClient().create(CloudManager.class);
-            Call<MainResponse>call = manager.getAllMoviesList(APIKEY);
+            Call<MainResponse>call = manager.getAllMoviesList(APIKEY,"1");
+
             call.enqueue(new Callback<MainResponse>() {
                 @Override
                 public void onResponse(Call<MainResponse> call, Response<MainResponse> response) {
                     if (response.isSuccessful()){
                         MainResponse response1 =response.body();
-
                     }
                 }
 
                 @Override
                 public void onFailure(Call<MainResponse> call, Throwable t) {
-
+                    t.getMessage().toString();
                 }
             });
         }

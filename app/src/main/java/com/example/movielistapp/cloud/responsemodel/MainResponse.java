@@ -1,57 +1,32 @@
 package com.example.movielistapp.cloud.responsemodel;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class MainResponse implements Parcelable {
+public class MainResponse {
 
+    @SerializedName("results")
+    @Expose
+    private List<MainResponse> results = null;
     @SerializedName("page")
     @Expose
     private Integer page;
-    @SerializedName("total_results")
-    @Expose
-    private Integer totalResults;
     @SerializedName("total_pages")
     @Expose
     private Integer totalPages;
-    @SerializedName("results")
+    @SerializedName("total_results")
     @Expose
-    private List<Result> results = null;
+    private Integer totalResults;
 
-    protected MainResponse(Parcel in) {
-        if (in.readByte() == 0) {
-            page = null;
-        } else {
-            page = in.readInt();
-        }
-        if (in.readByte() == 0) {
-            totalResults = null;
-        } else {
-            totalResults = in.readInt();
-        }
-        if (in.readByte() == 0) {
-            totalPages = null;
-        } else {
-            totalPages = in.readInt();
-        }
+    public List<MainResponse> getResults() {
+        return results;
     }
 
-    public static final Creator<MainResponse> CREATOR = new Creator<MainResponse>() {
-        @Override
-        public MainResponse createFromParcel(Parcel in) {
-            return new MainResponse(in);
-        }
-
-        @Override
-        public MainResponse[] newArray(int size) {
-            return new MainResponse[size];
-        }
-    };
+    public void setResults(List<MainResponse> results) {
+        this.results = results;
+    }
 
     public Integer getPage() {
         return page;
@@ -59,14 +34,6 @@ public class MainResponse implements Parcelable {
 
     public void setPage(Integer page) {
         this.page = page;
-    }
-
-    public Integer getTotalResults() {
-        return totalResults;
-    }
-
-    public void setTotalResults(Integer totalResults) {
-        this.totalResults = totalResults;
     }
 
     public Integer getTotalPages() {
@@ -77,38 +44,11 @@ public class MainResponse implements Parcelable {
         this.totalPages = totalPages;
     }
 
-    public List<Result> getResults() {
-        return results;
+    public Integer getTotalResults() {
+        return totalResults;
     }
 
-    public void setResults(List<Result> results) {
-        this.results = results;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        if (page == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(page);
-        }
-        if (totalResults == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(totalResults);
-        }
-        if (totalPages == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(totalPages);
-        }
+    public void setTotalResults(Integer totalResults) {
+        this.totalResults = totalResults;
     }
 }

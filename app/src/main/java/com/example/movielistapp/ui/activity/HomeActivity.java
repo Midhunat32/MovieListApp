@@ -1,6 +1,5 @@
 package com.example.movielistapp.ui.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -8,7 +7,8 @@ import android.widget.Toast;
 
 
 import com.example.movielistapp.R;
-import com.example.movielistapp.cloud.responsemodel.Result;
+import com.example.movielistapp.cloud.Result;
+import com.example.movielistapp.cloud.responsemodel.MainResponse;
 import com.example.movielistapp.presenter.MoviesListPresenter;
 import com.example.movielistapp.presenter.MoviesListPresenterImpl;
 import com.example.movielistapp.utility.ClickListener;
@@ -53,7 +53,7 @@ public class HomeActivity extends BaseActivity implements MoviesListPresenter.Vi
     }
 
     @Override
-    public void onShowAllMoviesList(List<Result> list) {
+    public void onShowAllMoviesList(List<MainResponse> list) {
 
     }
 

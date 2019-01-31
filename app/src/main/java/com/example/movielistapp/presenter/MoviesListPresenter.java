@@ -1,13 +1,13 @@
 package com.example.movielistapp.presenter;
 
 
-import com.example.movielistapp.cloud.responsemodel.Result;
+import com.example.movielistapp.cloud.responsemodel.MainResponse;
 
 import java.util.List;
 
 public interface MoviesListPresenter {
     interface View{
-        void onShowAllMoviesList(List<Result> list);
+        void onShowAllMoviesList(List<MainResponse> list);
         void onFailureFecthAllMovies(String errMsg);
     }
     interface Presenter{
