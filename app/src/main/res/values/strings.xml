@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">MovieListApp</string>
+    <string name="err_network">Please connect to internet</string>
+</resources>
