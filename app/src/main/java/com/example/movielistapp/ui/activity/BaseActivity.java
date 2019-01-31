@@ -17,6 +17,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 
 
+
     public void loadFragment(Fragment fragment, @IdRes int rsId, boolean addToBackstack) {
 
         FragmentManager fragmentManager = getSupportFragmentManager();

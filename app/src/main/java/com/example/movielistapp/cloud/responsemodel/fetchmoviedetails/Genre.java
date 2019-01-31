@@ -1,15 +1,15 @@
-package com.example.movielistapp.cloud;
+package com.example.movielistapp.cloud.responsemodel.fetchmoviedetails;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Result {
+class Genre {
     @SerializedName("id")
     @Expose
     private Integer id;
-    @SerializedName("adult")
+    @SerializedName("name")
     @Expose
-    private Boolean adult;
+    private String name;
 
     public Integer getId() {
         return id;
@@ -19,11 +19,11 @@ public class Result {
         this.id = id;
     }
 
-    public Boolean getAdult() {
-        return adult;
+    public String getName() {
+        return name;
     }
 
-    public void setAdult(Boolean adult) {
-        this.adult = adult;
+    public void setName(String name) {
+        this.name = name;
     }
 }

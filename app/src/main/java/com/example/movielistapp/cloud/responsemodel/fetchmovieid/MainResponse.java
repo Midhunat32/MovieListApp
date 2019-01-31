@@ -1,6 +1,6 @@
-package com.example.movielistapp.cloud.responsemodel;
+package com.example.movielistapp.cloud.responsemodel.fetchmovieid;
 
-import com.example.movielistapp.cloud.Result;
+import com.example.movielistapp.cloud.responsemodel.fetchmovieid.Result;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

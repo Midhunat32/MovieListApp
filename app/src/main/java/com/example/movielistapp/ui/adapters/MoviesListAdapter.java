@@ -2,24 +2,19 @@ package com.example.movielistapp.ui.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 
+import com.example.movielistapp.Movies.DummyModel;
 import com.example.movielistapp.R;
-import com.example.movielistapp.cloud.Result;
-import com.example.movielistapp.cloud.responsemodel.MainResponse;
-import com.example.movielistapp.ui.activity.BaseActivity;
-import com.example.movielistapp.ui.fragment.MovieItemListFragment;
+import com.example.movielistapp.cloud.responsemodel.fetchmoviedetails.DataItemModel;
+import com.example.movielistapp.cloud.responsemodel.fetchmovieid.Result;
 import com.example.movielistapp.utility.ClickListener;
 
 import java.util.List;
@@ -31,20 +26,30 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Vi
     private Context mContext;
     private FragmentManager fragmentManager;
     int currentItem = 0;
+    List<DataItemModel> dataMovieDetails;
+
+
+    List<DummyModel>dummyModelList;
 
 
 
 
-    public MoviesListAdapter(FragmentManager fragmentManager, Context mContext, ClickListener listener) {
+    public MoviesListAdapter( Context mContext, ClickListener listener) {
         this.mContext = mContext;
         this.listener = listener;
         this.fragmentManager = fragmentManager;
     }
 
-    public void setData(List<Result>moviesList){
-        this.moviesList = moviesList;
+    public void setMovieIdData(List<DummyModel>moviesList){
+        this.dummyModelList = moviesList;
         notifyDataSetChanged();
     }
+
+//    public void setMovieDetailsUiData(List<DataItemModel> dataMovieDetails){
+//        this.dataMovieDetails = dataMovieDetails;
+//        notifyDataSetChanged();
+//    }
+
 
     @NonNull
     @Override
@@ -55,11 +60,9 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         currentItem = position;
-        Result result = moviesList.get(position);
-        if(null != result){
-            Integer id = result.getId();
-
-        }
+        DataItemModel model = dummyModelList.get(position).getData();
+        viewHolder.tvDescription.setText(model.getOverview());
+        viewHolder.tvTitle.setText(model.getTitle());
 
     }
 
@@ -69,16 +72,18 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return moviesList ==null ? 0: moviesList.size();
+        return dummyModelList ==null ? 0: dummyModelList.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
         CardView cardView;
-        TextView textView;
+        TextView tvTitle,tvDescription;
         public ViewHolder(View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.card);
-            textView = itemView.findViewById(R.id.tvText);
+            tvTitle = itemView.findViewById(R.id.tvTitle);
+            tvDescription = itemView.findViewById(R.id.tvDescription);
         }
+
     }
 }
