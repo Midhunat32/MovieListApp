@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.example.movielistapp.R;
 
 public class MovieItemListFragment  extends Fragment {
+    public static final String TAG = MovieItemListFragment.class.getSimpleName();
     private static final String MOVIE_ID = "movie_id";
     private ImageView imageView;
     private TextView textView;
@@ -45,5 +46,6 @@ public class MovieItemListFragment  extends Fragment {
             textView = v.findViewById(R.id.tvMovieName);
             imageView = v.findViewById(R.id.ivMovieImage);
         }
+
     }
 }

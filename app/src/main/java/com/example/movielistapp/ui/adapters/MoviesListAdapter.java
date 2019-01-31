@@ -2,7 +2,9 @@ package com.example.movielistapp.ui.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 
 import com.example.movielistapp.R;
@@ -26,11 +29,16 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Vi
     private Result movieItem;
     private ClickListener listener;
     private Context mContext;
+    private FragmentManager fragmentManager;
+    int currentItem = 0;
 
 
-    public MoviesListAdapter(Context mContext, ClickListener listener) {
+
+
+    public MoviesListAdapter(FragmentManager fragmentManager, Context mContext, ClickListener listener) {
         this.mContext = mContext;
         this.listener = listener;
+        this.fragmentManager = fragmentManager;
     }
 
     public void setData(List<Result>moviesList){
@@ -46,22 +54,17 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
+        currentItem = position;
         Result result = moviesList.get(position);
         if(null != result){
             Integer id = result.getId();
-            loadFragment(id);
+
         }
 
     }
 
-    private void loadFragment(Integer id) {
-     /*   MovieItemListFragment fr = MovieItemListFragment.newInstance(id);
-
-        FragmentTransaction fragmentTransaction = mContext.fr.beginTransaction();
-        fragmentTransaction.replace(R.id.flContainer, fr);
-
-        fragmentTransaction.commit();*/
-
+    public int getCurrentItem() {
+        return currentItem;
     }
 
     @Override
@@ -71,11 +74,11 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Vi
 
     class ViewHolder extends RecyclerView.ViewHolder{
         CardView cardView;
-        FrameLayout flContainer;
+        TextView textView;
         public ViewHolder(View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.card);
-            flContainer = itemView.findViewById(R.id.flContainer);
+            textView = itemView.findViewById(R.id.tvText);
         }
     }
 }

@@ -28,13 +28,14 @@ public class MoviesListPresenterImpl implements MoviesListPresenter.Presenter {
                 public void onResponse(Call<MainResponse> call, Response<MainResponse> response) {
                     if (response.isSuccessful()){
                         MainResponse response1 =response.body();
+                        mView.onShowAllMoviesList(response1);
                     }
                 }
 
                 @Override
                 public void onFailure(Call<MainResponse> call, Throwable t) {
                     if (null!= t.getMessage())
-                    mView.onFailureFecthAllMovies( t.getMessage().toString());
+                    mView.onFailureFecthAllMovies( t.getMessage());
                 }
             });
         }
