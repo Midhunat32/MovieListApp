@@ -20,7 +20,6 @@ public class HomeActivity extends BaseActivity implements MoviesListPresenter.Vi
     RecyclerView mRvMoviesList;
     List<Result>movieslist;
     Result movieSelected;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +28,6 @@ public class HomeActivity extends BaseActivity implements MoviesListPresenter.Vi
         initUi();
         registerClickListener();
         fetchAllMovies();
-
 
     }
 
@@ -54,6 +52,9 @@ public class HomeActivity extends BaseActivity implements MoviesListPresenter.Vi
 
     @Override
     public void onShowAllMoviesList(List<MainResponse> list) {
+        if(null != list && list.size()>0){
+
+        }
 
     }
 

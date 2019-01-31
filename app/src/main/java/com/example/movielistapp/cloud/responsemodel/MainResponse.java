@@ -1,5 +1,6 @@
 package com.example.movielistapp.cloud.responsemodel;
 
+import com.example.movielistapp.cloud.Result;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -9,7 +10,7 @@ public class MainResponse {
 
     @SerializedName("results")
     @Expose
-    private List<MainResponse> results = null;
+    private List<Result> results = null;
     @SerializedName("page")
     @Expose
     private Integer page;
@@ -20,11 +21,11 @@ public class MainResponse {
     @Expose
     private Integer totalResults;
 
-    public List<MainResponse> getResults() {
+    public List<Result> getResults() {
         return results;
     }
 
-    public void setResults(List<MainResponse> results) {
+    public void setResults(List<Result> results) {
         this.results = results;
     }
 
