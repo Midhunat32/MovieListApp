@@ -12,6 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AppCloudClient {
     private static Retrofit retrofit = null;
+    private static Object mutex = new Object();
 
     public static Retrofit getClient(){
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
@@ -21,12 +22,13 @@ public class AppCloudClient {
                 .setLenient()
                 .create();
         if (retrofit == null){
-
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(BuildConfig.BASE_URL)
-                    .client(client)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .build();
+            synchronized (mutex){
+                retrofit = new Retrofit.Builder()
+                        .baseUrl(BuildConfig.BASE_URL)
+                        .client(client)
+                        .addConverterFactory(GsonConverterFactory.create(gson))
+                        .build();
+            }
 
         }
         return retrofit;

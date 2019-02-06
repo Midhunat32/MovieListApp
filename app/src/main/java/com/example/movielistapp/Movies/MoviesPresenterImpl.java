@@ -19,6 +19,7 @@ import static com.example.movielistapp.presenter.MoviesListPresenterImpl.APIKEY;
 public class MoviesPresenterImpl implements MoviesPresenter.Presenter,ApiManager.View {
     Context mContext;
     MoviesPresenter.View mView;
+    ApiManager apiManager;
 
     public MoviesPresenterImpl(Context mContext) {
         this.mContext = mContext;
@@ -51,14 +52,20 @@ public class MoviesPresenterImpl implements MoviesPresenter.Presenter,ApiManager
 
     @Override
     public void fetchMoviesDetails(MoviesPresenter.View mView, List<DummyModel> dummyModelList) {
-        if (mView!=null){
+        if (mView!=null && null!=dummyModelList){
             this.mView = mView;
-            ApiManager apiManager = new ApiManagerImpl();
-            apiManager.fetchDataFromApi(this,dummyModelList);
+            apiManager = new ApiManagerImpl(this,dummyModelList);
+            apiManager.fetchDataFromApi();
         }
     }
 
-    //api manager callback
+    @Override
+    public void refresList() {
+        apiManager.refreshList();
+        return;
+    }
+
+
     @Override
     public void onSuccess(List<DummyModel> dummyModel) {
         mView.showMovieDetailList(dummyModel);
@@ -67,6 +74,11 @@ public class MoviesPresenterImpl implements MoviesPresenter.Presenter,ApiManager
     @Override
     public void onFailure(String errMsg) {
 
+    }
+
+    @Override
+    public void onSuccesItem(DummyModel item,int position) {
+        mView.showMovieDetailItem(item,position);
     }
 }
 

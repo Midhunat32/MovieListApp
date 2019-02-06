@@ -6,6 +6,9 @@ public interface ApiManager {
     public interface View{
         public void onSuccess(List<DummyModel> dummyModel);
         public void onFailure(String errMsg);
+        public void onSuccesItem(DummyModel item,int position);
+
     }
-    void fetchDataFromApi(ApiManager.View managerView,List<DummyModel> listDummyModel);
+    void fetchDataFromApi();
+    void refreshList();
 }

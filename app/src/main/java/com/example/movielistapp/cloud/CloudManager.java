@@ -15,5 +15,7 @@ public interface CloudManager {
     Call<MainResponse> getAllMoviesId(@Query("api_key") String apiKey, @Query("page")String page);
 
     @GET("3/movie/{movie_id}")
-    Call<DataItemModel> getMovieDetails(@Path("movie_id")String movieId, @Query("api_key") String apiKey);
+    Call<DataItemModel> getMovieDetails(@Path("movie_id")String movieId,
+                                        @Query("api_key") String apiKey,
+                                        @Query("language")String language);
 }

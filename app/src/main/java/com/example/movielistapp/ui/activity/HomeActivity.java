@@ -1,7 +1,6 @@
 package com.example.movielistapp.ui.activity;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,6 +18,7 @@ import com.example.movielistapp.cloud.responsemodel.fetchmovieid.MainResponse;
 import com.example.movielistapp.presenter.MoviesListPresenter;
 import com.example.movielistapp.presenter.MoviesListPresenterImpl;
 import com.example.movielistapp.ui.adapters.MoviesListAdapter;
+import com.example.movielistapp.utility.CallApiListener;
 import com.example.movielistapp.utility.ClickListener;
 
 import java.util.ArrayList;
@@ -30,6 +30,7 @@ public class HomeActivity extends BaseActivity implements MoviesListPresenter.Vi
     List<Result> resultsId;
     MoviesListAdapter adapter;
     List<DataItemModel> singleItemData;
+    private CallApiListener callApiListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +39,8 @@ public class HomeActivity extends BaseActivity implements MoviesListPresenter.Vi
         initObjects();
         initUi();
         registerClickListener();
-        setRecyclerData();
-        fetchAllMovies();
-
-
+        setRecyclerAdapter();
+        fetchAllMoviesId();
     }
 
     private void initObjects() {
@@ -49,34 +48,16 @@ public class HomeActivity extends BaseActivity implements MoviesListPresenter.Vi
         singleItemData = new ArrayList<>();
     }
 
-    private void fetchAllMovies() {
+    private void fetchAllMoviesId() {
 
         if (isNetworkAvailable())
             mPresenter.fetchAllMovieId(this);
         else
             Toast.makeText(this, getString(R.string.err_network), Toast.LENGTH_SHORT).show();
+    }
 
-        mRvMoviesList.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
-            @Override
-            public void onChildViewAttachedToWindow(@NonNull View view) {
-
-                int itemCount = adapter.getCurrentItem();
-                String id = resultsId.get(itemCount).getId().toString();
-                Log.e("xxx", resultsId.get(itemCount).getId().toString());
-                TextView textView = view.findViewById(R.id.tvTitle);
-                textView.setText(resultsId.get(itemCount).getId().toString());
-
-                fetchMovieDetailsViewId(view, id);
-
-            }
-
-            @Override
-            public void onChildViewDetachedFromWindow(@NonNull View view) {
-
-            }
-        });
-
-
+    private void fetchDataFromCloud(Result result) {
+        mPresenter.fetchAllMovieList(result, this);
     }
 
 
@@ -88,6 +69,13 @@ public class HomeActivity extends BaseActivity implements MoviesListPresenter.Vi
 
     private void registerClickListener() {
 
+        callApiListener = new CallApiListener() {
+            @Override
+            public void callApi(Result result, int position) {
+                Log.i("test>>",result.getId().toString());
+                fetchDataFromCloud(resultsId.get(position));
+            }
+        };
     }
 
     private void initUi() {
@@ -100,13 +88,13 @@ public class HomeActivity extends BaseActivity implements MoviesListPresenter.Vi
     public void onFetchAllMoviesId(MainResponse list) {
         if (null != list) {
             resultsId = list.getResults();
-           // adapter.setMovieIdData(list.getResults());
+            adapter.setMovieIdData(list.getResults());
         }
-
     }
 
-    private void setRecyclerData() {
+    private void setRecyclerAdapter() {
         adapter = new MoviesListAdapter(this, this);
+        adapter.setCallApiListener(callApiListener);
         mRvMoviesList.setAdapter(adapter);
     }
 
@@ -135,6 +123,21 @@ public class HomeActivity extends BaseActivity implements MoviesListPresenter.Vi
 //                        .load(data.getPosterPath())
 //                        .into(ivPoster);
             }
+        }
+    }
+
+    @Override
+    public void fetchMovie(Result result) {
+        if(null != result){
+            int i = resultsId.indexOf(result);
+            if(i != -1){
+                resultsId.set(i,result);
+                if(null != adapter){
+                    //adapter.setMovieDataList(resultsId);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
         }
     }
 

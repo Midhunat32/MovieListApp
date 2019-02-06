@@ -21,6 +21,7 @@ public class MainResponse {
     @Expose
     private Integer totalResults;
 
+
     public List<Result> getResults() {
         return results;
     }

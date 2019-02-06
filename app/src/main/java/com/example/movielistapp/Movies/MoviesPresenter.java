@@ -12,12 +12,16 @@ public interface MoviesPresenter {
         void onFailure(String errMsg);
 
         void showMovieDetailList(List<DummyModel> object);
+
+        void showMovieDetailItem(DummyModel object,int position);
     }
 
     public interface Presenter{
         void fetchMoviesId(MoviesPresenter.View mView);
 
         void fetchMoviesDetails(MoviesPresenter.View mView,List<DummyModel>dummyModelList);
+
+        void refresList();
 
     }
 

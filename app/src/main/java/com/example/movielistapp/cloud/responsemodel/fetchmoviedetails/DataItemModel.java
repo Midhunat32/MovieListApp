@@ -77,7 +77,7 @@ public class DataItemModel {
     private Boolean video;
     @SerializedName("vote_average")
     @Expose
-    private Integer voteAverage;
+    private float voteAverage;
     @SerializedName("vote_count")
     @Expose
     private Integer voteCount;
@@ -266,11 +266,11 @@ public class DataItemModel {
         this.video = video;
     }
 
-    public Integer getVoteAverage() {
+    public float getVoteAverage() {
         return voteAverage;
     }
 
-    public void setVoteAverage(Integer voteAverage) {
+    public void setVoteAverage(float voteAverage) {
         this.voteAverage = voteAverage;
     }
 

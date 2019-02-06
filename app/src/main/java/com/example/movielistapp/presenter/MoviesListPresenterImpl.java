@@ -8,6 +8,7 @@ import com.example.movielistapp.cloud.AppCloudClient;
 import com.example.movielistapp.cloud.CloudManager;
 import com.example.movielistapp.cloud.responsemodel.fetchmoviedetails.DataItemModel;
 import com.example.movielistapp.cloud.responsemodel.fetchmovieid.MainResponse;
+import com.example.movielistapp.cloud.responsemodel.fetchmovieid.Result;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -15,6 +16,7 @@ import retrofit2.Response;
 
 public class MoviesListPresenterImpl implements MoviesListPresenter.Presenter {
     Context mContext;
+    private String PAGE_NO="1";
     public static final String APIKEY= BuildConfig.API_KEY;
     public MoviesListPresenterImpl(Context mContext) {
         this.mContext=mContext;
@@ -47,7 +49,7 @@ public class MoviesListPresenterImpl implements MoviesListPresenter.Presenter {
     public void fetchAllMovieList(final MoviesListPresenter.View mView, String idMovie,final View viewRecycler) {
         if (mView!=null){
             CloudManager manager = AppCloudClient.getClient().create(CloudManager.class);
-            Call<DataItemModel>call = manager.getMovieDetails(idMovie,APIKEY);
+            Call<DataItemModel>call = manager.getMovieDetails(idMovie,APIKEY,"en-US");
             call.enqueue(new Callback<DataItemModel>() {
                 @Override
                 public void onResponse(Call<DataItemModel> call, Response<DataItemModel> response) {
@@ -65,5 +67,31 @@ public class MoviesListPresenterImpl implements MoviesListPresenter.Presenter {
                 }
             });
         }
+    }
+
+    @Override
+    public void fetchAllMovieList(final Result result, final MoviesListPresenter.View mView) {
+        if (mView!=null){
+            CloudManager manager = AppCloudClient.getClient().create(CloudManager.class);
+            Call<DataItemModel>call = manager.getMovieDetails(result.getId().toString(),APIKEY,"en-US");
+            call.enqueue(new Callback<DataItemModel>() {
+                @Override
+                public void onResponse(Call<DataItemModel> call, Response<DataItemModel> response) {
+                    if (response.isSuccessful()) {
+                        DataItemModel data = response.body();
+                        result.setDataItemModel(data);
+                        mView.fetchMovie(result);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<DataItemModel> call, Throwable t) {
+                    if (null != t.getMessage()){
+                        mView.onFailureFetchMovieDetails(t.getMessage());
+                    }
+                }
+            });
+        }
+
     }
 }
