@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Movies.MoviesActivity">
+    android:background="@color/colorPrimary"
+    tools:context=".ui.activity.MoviesActivity">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="wrap_content"
@@ -20,6 +21,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <android.support.v7.widget.RecyclerView
+            android:background="@color/white"
             android:id="@+id/rvMoviesList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

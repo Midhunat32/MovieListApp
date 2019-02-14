@@ -1,4 +1,4 @@
-package com.example.movielistapp.Movies;
+package com.example.movielistapp.ui.activity;
 
 import android.content.Intent;
 import android.os.Handler;
@@ -24,7 +24,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(SplashScreenActivity.this,MoviesActivity.class));
+                startActivity(new Intent(SplashScreenActivity.this, MoviesActivity.class));
                 finish();
             }
         }, TIME_DELAY);

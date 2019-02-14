@@ -1,12 +1,14 @@
-package com.example.movielistapp.Movies;
+package com.example.movielistapp.presenter;
 
 import android.content.Context;
 
 import com.example.movielistapp.BuildConfig;
+import com.example.movielistapp.Movies.ApiManager;
+import com.example.movielistapp.Movies.ApiManagerImpl;
+import com.example.movielistapp.Movies.MovieItemModel;
 import com.example.movielistapp.cloud.AppCloudClient;
 import com.example.movielistapp.cloud.CloudManager;
 import com.example.movielistapp.cloud.responsemodel.fetchmovieid.MainResponse;
-import com.example.movielistapp.ui.adapters.MoviesListAdapter;
 
 import java.util.List;
 
@@ -14,12 +16,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.example.movielistapp.presenter.MoviesListPresenterImpl.APIKEY;
 
-public class MoviesPresenterImpl implements MoviesPresenter.Presenter,ApiManager.View {
+
+public class MoviesPresenterImpl implements MoviesPresenter.Presenter, ApiManager.View {
     Context mContext;
     MoviesPresenter.View mView;
     ApiManager apiManager;
+    private final int START=1;
 
     public MoviesPresenterImpl(Context mContext) {
         this.mContext = mContext;
@@ -51,24 +54,23 @@ public class MoviesPresenterImpl implements MoviesPresenter.Presenter,ApiManager
     }
 
     @Override
-    public void fetchMoviesDetails(MoviesPresenter.View mView, List<DummyModel> dummyModelList) {
-        if (mView!=null && null!=dummyModelList){
+    public void fetchMoviesDetails(MoviesPresenter.View mView, List<MovieItemModel> movieItemModelList) {
+        if (mView!=null && null!= movieItemModelList){
             this.mView = mView;
-            apiManager = new ApiManagerImpl(this,dummyModelList);
-            apiManager.fetchDataFromApi();
+            apiManager = new ApiManagerImpl(this, movieItemModelList);
+            apiManager.fetchDataFromApi(START);
         }
     }
 
     @Override
     public void refresList() {
         apiManager.refreshList();
-        return;
     }
 
 
     @Override
-    public void onSuccess(List<DummyModel> dummyModel) {
-        mView.showMovieDetailList(dummyModel);
+    public void onSuccess(List<MovieItemModel> movieItemModel) {
+        mView.showMovieDetailList(movieItemModel);
     }
 
     @Override
@@ -77,7 +79,7 @@ public class MoviesPresenterImpl implements MoviesPresenter.Presenter,ApiManager
     }
 
     @Override
-    public void onSuccesItem(DummyModel item,int position) {
+    public void onSuccesItem(MovieItemModel item, int position) {
         mView.showMovieDetailItem(item,position);
     }
 }

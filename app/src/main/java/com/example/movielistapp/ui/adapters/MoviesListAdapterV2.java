@@ -11,12 +11,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.example.movielistapp.Movies.DummyModel;
+import com.example.movielistapp.Movies.MovieItemModel;
 import com.example.movielistapp.R;
 import com.example.movielistapp.cloud.responsemodel.fetchmoviedetails.DataItemModel;
-import com.example.movielistapp.cloud.responsemodel.fetchmovieid.Result;
-import com.example.movielistapp.utility.CallApiListener;
 import com.example.movielistapp.utility.ClickListener;
 import com.squareup.picasso.Picasso;
 
@@ -26,7 +23,7 @@ import java.util.List;
 public class MoviesListAdapterV2 extends RecyclerView.Adapter<MoviesListAdapterV2.ViewHolder>{
     private ClickListener listener;
     private Context mContext;
-    private List<DummyModel> listMoviesData = new ArrayList<>();
+    private List<MovieItemModel> listMoviesData = new ArrayList<>();
     private final String IMAGE_URL="http://image.tmdb.org/t/p/w185";
     private String photoUrl;
 
@@ -36,12 +33,12 @@ public class MoviesListAdapterV2 extends RecyclerView.Adapter<MoviesListAdapterV
         this.listener = listener;
     }
 
-    public void setMovieDataList(List<DummyModel> listMoviesData){
+    public void setMovieDataList(List<MovieItemModel> listMoviesData){
         this.listMoviesData = listMoviesData;
         notifyDataSetChanged();
     }
 
-    public void setMovieDataItem(DummyModel dataItem,int position){
+    public void setMovieDataItem(MovieItemModel dataItem, int position){
         listMoviesData.add(dataItem);
         notifyItemInserted(position);
     }
@@ -63,9 +60,9 @@ public class MoviesListAdapterV2 extends RecyclerView.Adapter<MoviesListAdapterV
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        DummyModel itemMovie  = listMoviesData.get(position);
+        MovieItemModel itemMovie  = listMoviesData.get(position);
         if (null != itemMovie.getData()){
-            viewHolder.onBind(itemMovie.getData());
+            viewHolder.onBind(itemMovie.getData(),position);
         }
     }
 
@@ -87,7 +84,7 @@ public class MoviesListAdapterV2 extends RecyclerView.Adapter<MoviesListAdapterV
             tvRating = itemView.findViewById(R.id.tvRating);
         }
 
-        void onBind(DataItemModel dataItemModel){
+        void onBind(final DataItemModel dataItemModel, final int position){
             if (dataItemModel.getPosterPath()!=null){
                 photoUrl = IMAGE_URL+dataItemModel.getPosterPath();
                 Log.d("photoUrl",photoUrl);
@@ -101,6 +98,13 @@ public class MoviesListAdapterV2 extends RecyclerView.Adapter<MoviesListAdapterV
                         .resize(200,200)
                         .into(ivPoster);
             }
+
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClicked(dataItemModel,position,v);
+                }
+            });
 
         }
 

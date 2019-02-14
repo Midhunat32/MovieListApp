@@ -1,7 +1,6 @@
 package com.example.movielistapp.Movies;
 
 import android.os.Handler;
-import android.util.Log;
 
 import com.example.movielistapp.cloud.AppCloudClient;
 import com.example.movielistapp.cloud.CloudManager;
@@ -18,9 +17,9 @@ import retrofit2.Response;
 
 import static com.example.movielistapp.presenter.MoviesListPresenterImpl.APIKEY;
 
+
 public class ApiManagerImpl implements ApiManager {
-    List<DummyModel> dummyModelList;
-    List<DummyModel> dummyModelListTemp = new ArrayList<>();
+    List<MovieItemModel> movieItemModelList;
     final int NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors();
     ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_OF_CORES);
     int mTotalItemCount, mCurrentItem = 0;
@@ -29,97 +28,86 @@ public class ApiManagerImpl implements ApiManager {
     Call<DataItemModel> call;
     ApiManager.View managerView;
     final Handler handler = new Handler();
+    private final int RUN = 1, STOP = 2;
+    private String languageCode = "en-US";
 
 
-    public ApiManagerImpl(ApiManager.View managerView, List<DummyModel> dummyModelList) {
-        this.dummyModelList = dummyModelList;
-        mTotalItemCount = dummyModelList.size();
+    public ApiManagerImpl(ApiManager.View managerView, List<MovieItemModel> movieItemModelList) {
+        this.movieItemModelList = movieItemModelList;
+        mTotalItemCount = movieItemModelList.size();
         manager = AppCloudClient.getClient().create(CloudManager.class);
         this.managerView = managerView;
 
     }
 
     @Override
-    public void fetchDataFromApi() {
+    public void fetchDataFromApi(int state) {
 
-        // while (mCurrentItem <= mTotalItemCount) {
 
 //        executorService.execute(new Runnable() {
 //            @Override
 //            public void run() {
 
-        if (mCurrentItem < mTotalItemCount) {
-//                    if (mCurrentItem == 20){
-//                        mCurrentItem = mTotalItemCount;
-//                        return;
-//                    }
-            mMovieId = dummyModelList.get(mCurrentItem).id;
-            call = manager.getMovieDetails(mMovieId, APIKEY, "en-US");
-            call.enqueue(new Callback<DataItemModel>() {
-                @Override
-                public void onResponse(Call<DataItemModel> call, Response<DataItemModel> response) {
-                    DataItemModel data = response.body();//raw data from server
-                    if (null != data) {
-                        DummyModel dummyModel = new DummyModel();
-                        dummyModel.setData(data);
-                        dummyModel.setId(mMovieId);
-                      //  dummyModelListTemp.add(dummyModel);
-                        //managerView.onSuccess(dummyModelList);
-                        managerView.onSuccesItem(dummyModel,mCurrentItem);
+        if (state == RUN) {
+            if (mCurrentItem < mTotalItemCount) {
 
-                        mCurrentItem++;
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                fetchDataFromApi();
-                            }
-                        }, 300);
-                    }else {
-                        mCurrentItem++;
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                fetchDataFromApi();
-                            }
-                        }, 300);
+                mMovieId = movieItemModelList.get(mCurrentItem).id;
+                call = manager.getMovieDetails(mMovieId,APIKEY, languageCode);
+                call.enqueue(new Callback<DataItemModel>() {
+                    @Override
+                    public void onResponse(Call<DataItemModel> call, Response<DataItemModel> response) {
+                        DataItemModel data = response.body();
+                        if (null != data) {
+                            MovieItemModel movieItemModel = new MovieItemModel();
+                            movieItemModel.setData(data);
+                            movieItemModel.setId(mMovieId);
+                            if (managerView != null)
+                                managerView.onSuccesItem(movieItemModel, mCurrentItem);
+                            addDelayApiFetch();
+                        } else {
+                            addDelayApiFetch();
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<DataItemModel> call, Throwable t) {
-                    if (null != t.getMessage()) {
-                        managerView.onFailure(t.getMessage());
-
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mCurrentItem++;
-                                fetchDataFromApi();
-                            }
-                        }, 300);
-
-
+                    @Override
+                    public void onFailure(Call<DataItemModel> call, Throwable t) {
+                        if (null != t.getMessage()) {
+                            managerView.onFailure(t.getMessage());
+                            addDelayApiFetch();
+                        }
                     }
-                }
-            });
-        }else {
-            return;
+                });
+            }
+
+
         }
-
 
 //            }
 //        });
 
-        // mCurrentItem++;
-        // }
 
+    }
 
+    private void addDelayApiFetch() {
+        mCurrentItem++;
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                fetchDataFromApi(RUN);
+            }
+        }, 300);
     }
 
     @Override
     public void refreshList() {
+        fetchDataFromApi(STOP);
         mCurrentItem = 0;
         mTotalItemCount = 0;
+        if (movieItemModelList != null)
+            movieItemModelList.clear();
+        mTotalItemCount = 0;
+        manager = null;
+        managerView = null;
         return;
     }
 }

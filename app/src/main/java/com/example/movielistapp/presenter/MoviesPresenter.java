@@ -1,5 +1,6 @@
-package com.example.movielistapp.Movies;
+package com.example.movielistapp.presenter;
 
+import com.example.movielistapp.Movies.MovieItemModel;
 import com.example.movielistapp.cloud.responsemodel.fetchmovieid.Result;
 
 import java.util.List;
@@ -11,15 +12,15 @@ public interface MoviesPresenter {
 
         void onFailure(String errMsg);
 
-        void showMovieDetailList(List<DummyModel> object);
+        void showMovieDetailList(List<MovieItemModel> object);
 
-        void showMovieDetailItem(DummyModel object,int position);
+        void showMovieDetailItem(MovieItemModel object, int position);
     }
 
     public interface Presenter{
         void fetchMoviesId(MoviesPresenter.View mView);
 
-        void fetchMoviesDetails(MoviesPresenter.View mView,List<DummyModel>dummyModelList);
+        void fetchMoviesDetails(MoviesPresenter.View mView,List<MovieItemModel> movieItemModelList);
 
         void refresList();
 

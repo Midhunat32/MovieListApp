@@ -4,11 +4,11 @@ import java.util.List;
 
 public interface ApiManager {
     public interface View{
-        public void onSuccess(List<DummyModel> dummyModel);
+        public void onSuccess(List<MovieItemModel> movieItemModel);
         public void onFailure(String errMsg);
-        public void onSuccesItem(DummyModel item,int position);
+        public void onSuccesItem(MovieItemModel item, int position);
 
     }
-    void fetchDataFromApi();
+    void fetchDataFromApi(int state);
     void refreshList();
 }

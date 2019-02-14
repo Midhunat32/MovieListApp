@@ -3,23 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card"
-    android:layout_margin="5dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginTop="3dp"
     android:layout_width="match_parent"
-    android:layout_height="90dp">
+    android:layout_height="100dp">
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
+        android:background="@drawable/gradient"
         android:layout_height="wrap_content">
 
         <ImageView
+            android:transitionName="TRANS"
             android:id="@+id/ivPoster"
-            android:layout_width="80dp"
-            android:layout_height="match_parent"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:src="@drawable/ic_noimage"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:textColor="@color/white"
             android:id="@+id/tvTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -31,6 +36,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:textColor="@color/white"
             android:id="@+id/tvDescription"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -49,13 +55,13 @@
             android:layout_width="16dp"
             android:layout_height="13dp"
             android:layout_marginEnd="2dp"
-            android:src="@drawable/love"
+            android:src="@drawable/ic_love"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvRating"
             app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
 
         <TextView
-
+            android:textColor="@color/white"
             android:id="@+id/tvRating"
             android:layout_width="wrap_content"
             android:layout_height="13dp"

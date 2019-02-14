@@ -1,33 +1,42 @@
-package com.example.movielistapp.Movies;
+package com.example.movielistapp.ui.activity;
 
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.ImageView;
 
+import com.example.movielistapp.Movies.MovieItemModel;
+import com.example.movielistapp.presenter.MoviesPresenter;
+import com.example.movielistapp.presenter.MoviesPresenterImpl;
 import com.example.movielistapp.R;
 import com.example.movielistapp.cloud.responsemodel.fetchmoviedetails.DataItemModel;
 import com.example.movielistapp.cloud.responsemodel.fetchmovieid.Result;
-import com.example.movielistapp.ui.activity.BaseActivity;
 import com.example.movielistapp.ui.adapters.MoviesListAdapterV2;
 import com.example.movielistapp.utility.ClickListener;
+import com.example.movielistapp.utility.DisplayChecker;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.movielistapp.MovieAppConstants.MOVIE_SELECTED;
+
 public class MoviesActivity extends BaseActivity implements ClickListener, MoviesPresenter.View,
-SwipeRefreshLayout.OnRefreshListener{
+        SwipeRefreshLayout.OnRefreshListener {
 
     RecyclerView mRvMoviesList;
     MoviesListAdapterV2 adapter;
     MoviesPresenter.Presenter presenter;
-    List<DummyModel> listDummyData = new ArrayList<>();
-    DummyModel dummyModel;
+    List<MovieItemModel> listDummyData = new ArrayList<>();
+    MovieItemModel movieItemModel;
     LayoutAnimationController animation;
     SwipeRefreshLayout swipeRefresh;
-    List<DummyModel> dummyModelListFinal=new ArrayList<>();
+    List<MovieItemModel> movieItemModelListFinal = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,33 +47,17 @@ SwipeRefreshLayout.OnRefreshListener{
         iniUi();
         registerListener();
         fetchAllIdFromCloud();
-      //  test();
+        checkDeviceScreen();
     }
 
-    private void test() {
-        List<DummyModel> dummyModelListFinal=new ArrayList<>();
-
-        for (int i = 0;i<5;i++){
-            DummyModel model =new DummyModel();
-            model.setId(""+i);
-            DataItemModel data =new DataItemModel();
-            data.setTitle("Title "+i);
-            model.setData(data);
-            dummyModelListFinal.add(model);
-        }
-
-        DummyModel model =new DummyModel();
-        model.setId("xxxxx");
-        DataItemModel data =new DataItemModel();
-        data.setTitle("Title xxxxx");
-        model.setData(data);
-        dummyModelListFinal.set(0,model);
-
-
-        for (DummyModel ignored :dummyModelListFinal){
-            System.out.println("TITLE "+ignored.getData().getTitle());
+    private void checkDeviceScreen() {
+        boolean isTab = DisplayChecker.isDeviceTab(this);
+        if (isTab) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
         }
     }
+
 
     private void fetchAllIdFromCloud() {
         swipeRefresh.setRefreshing(true);
@@ -95,11 +88,13 @@ SwipeRefreshLayout.OnRefreshListener{
 
     @Override
     public void onMoviesIdList(List<Result> moviesIdList) {
+        if (listDummyData != null)
+            listDummyData.clear();
         if (moviesIdList != null) {
             for (int i = 0; i < moviesIdList.size(); i++) {
-                dummyModel = new DummyModel();
-                dummyModel.setId(String.valueOf(moviesIdList.get(i).getId()));
-                listDummyData.add(dummyModel);
+                movieItemModel = new MovieItemModel();
+                movieItemModel.setId(String.valueOf(moviesIdList.get(i).getId()));
+                listDummyData.add(movieItemModel);
             }
             presenter.fetchMoviesDetails(this, listDummyData);
         }
@@ -112,32 +107,38 @@ SwipeRefreshLayout.OnRefreshListener{
     }
 
     @Override
-    public void showMovieDetailList(final List<DummyModel> dummyModelList) {
-        this.dummyModelListFinal= dummyModelList;
-        if (swipeRefresh.isRefreshing()){
+    public void showMovieDetailList(final List<MovieItemModel> movieItemModelList) {
+        this.movieItemModelListFinal = movieItemModelList;
+        if (swipeRefresh.isRefreshing()) {
             swipeRefresh.setRefreshing(false);
         }
-        adapter.setMovieDataList(dummyModelListFinal);
+        adapter.setMovieDataList(movieItemModelListFinal);
     }
 
     @Override
-    public void showMovieDetailItem(DummyModel object,int position) {
-        if (swipeRefresh.isRefreshing()){
+    public void showMovieDetailItem(MovieItemModel object, int position) {
+        if (swipeRefresh.isRefreshing()) {
             swipeRefresh.setRefreshing(false);
         }
-        adapter.setMovieDataItem(object,position);
+        adapter.setMovieDataItem(object, position);
     }
 
     @Override
-    public void onItemClicked(Object item, int position, View view) {
-
+    public void onItemClicked(Object item, int position, View mView) {
+        DataItemModel data = (DataItemModel) item;
+        ImageView ivPoster = mView.findViewById(R.id.ivPoster);
+        Intent intent = new Intent(this, MovieDetailsActivity.class);
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this, ivPoster, "TRANS");
+        intent.putExtra(MOVIE_SELECTED, data);
+        startActivity(intent, options.toBundle());
     }
 
     @Override
     public void onRefresh() {
-        listDummyData.clear();
-        dummyModelListFinal.clear();
         presenter.refresList();
+        listDummyData.clear();
+        movieItemModelListFinal.clear();
         adapter.clearData();
         swipeRefresh.setRefreshing(true);
         presenter.fetchMoviesId(this);
