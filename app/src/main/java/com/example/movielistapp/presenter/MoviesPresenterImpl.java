@@ -58,19 +58,14 @@ public class MoviesPresenterImpl implements MoviesPresenter.Presenter, ApiManage
         if (mView!=null && null!= movieItemModelList){
             this.mView = mView;
             apiManager = new ApiManagerImpl(this, movieItemModelList);
-            apiManager.fetchDataFromApi(START);
+            apiManager.fetchDataFromApi();
         }
-    }
-
-    @Override
-    public void refresList() {
-        apiManager.refreshList();
     }
 
 
     @Override
     public void onSuccess(List<MovieItemModel> movieItemModel) {
-        mView.showMovieDetailList(movieItemModel);
+       // mView.showMovieDetailList(movieItemModel);
     }
 
     @Override
@@ -79,8 +74,9 @@ public class MoviesPresenterImpl implements MoviesPresenter.Presenter, ApiManage
     }
 
     @Override
-    public void onSuccesItem(MovieItemModel item, int position) {
-        mView.showMovieDetailItem(item,position);
+    public void onSuccesItem(MovieItemModel item, int position, List<MovieItemModel> movieItemModelList) {
+        mView.showMovieDetailItem(item,position,movieItemModelList);
     }
+
 }
 

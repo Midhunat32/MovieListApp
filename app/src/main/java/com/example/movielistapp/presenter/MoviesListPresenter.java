@@ -1,7 +1,7 @@
 package com.example.movielistapp.presenter;
 
 
-import com.example.movielistapp.cloud.responsemodel.fetchmoviedetails.DataItemModel;
+import com.example.movielistapp.cloud.responsemodel.fetchmoviedetails.MovieDetailsModel;
 import com.example.movielistapp.cloud.responsemodel.fetchmovieid.MainResponse;
 import com.example.movielistapp.cloud.responsemodel.fetchmovieid.Result;
 
@@ -10,7 +10,7 @@ public interface MoviesListPresenter {
         void onFetchAllMoviesId(MainResponse list);
         void onFailureFetchAllMovieId(String errMsg);
 
-        void onFetchMovieDetails(DataItemModel data, android.view.View viewRecycler);
+        void onFetchMovieDetails(MovieDetailsModel data, android.view.View viewRecycler);
         void fetchMovie(Result result);
 
         void onFailureFetchMovieDetails(String errMsg);

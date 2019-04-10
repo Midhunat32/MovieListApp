@@ -3,11 +3,11 @@ package com.example.movielistapp.Movies;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.example.movielistapp.cloud.responsemodel.fetchmoviedetails.DataItemModel;
+import com.example.movielistapp.cloud.responsemodel.fetchmoviedetails.MovieDetailsModel;
 
 public class MovieItemModel implements Parcelable {
     String id;
-    DataItemModel data;
+    MovieDetailsModel data;
 
     protected MovieItemModel(Parcel in) {
         id = in.readString();
@@ -37,11 +37,11 @@ public class MovieItemModel implements Parcelable {
         this.id = id;
     }
 
-    public DataItemModel getData() {
+    public MovieDetailsModel getData() {
         return data;
     }
 
-    public void setData(DataItemModel data) {
+    public void setData(MovieDetailsModel data) {
         this.data = data;
     }
 

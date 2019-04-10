@@ -14,15 +14,14 @@ public interface MoviesPresenter {
 
         void showMovieDetailList(List<MovieItemModel> object);
 
-        void showMovieDetailItem(MovieItemModel object, int position);
+        void showMovieDetailItem(MovieItemModel object, int position,List<MovieItemModel> movieItemModelList);
     }
 
     public interface Presenter{
+
         void fetchMoviesId(MoviesPresenter.View mView);
 
         void fetchMoviesDetails(MoviesPresenter.View mView,List<MovieItemModel> movieItemModelList);
-
-        void refresList();
 
     }
 

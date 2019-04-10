@@ -6,9 +6,9 @@ public interface ApiManager {
     public interface View{
         public void onSuccess(List<MovieItemModel> movieItemModel);
         public void onFailure(String errMsg);
-        public void onSuccesItem(MovieItemModel item, int position);
+        public void onSuccesItem(MovieItemModel item, int position,List<MovieItemModel> movieItemModelList);
 
     }
-    void fetchDataFromApi(int state);
-    void refreshList();
+    void fetchDataFromApi();
+
 }

@@ -1,18 +1,16 @@
 package com.example.movielistapp.ui.activity;
 
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.Build;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
-import com.example.movielistapp.MovieAppConstants;
 import com.example.movielistapp.R;
-import com.example.movielistapp.cloud.responsemodel.fetchmoviedetails.DataItemModel;
-import com.example.movielistapp.ui.activity.BaseActivity;
+import com.example.movielistapp.cloud.responsemodel.fetchmoviedetails.MovieDetailsModel;
 import com.example.movielistapp.utility.DisplayChecker;
 import com.squareup.picasso.Picasso;
 
@@ -23,15 +21,21 @@ public class MovieDetailsActivity extends BaseActivity {
     private TextView tvRating, tvTitle, tvOverView;
     private ImageView ivPoster;
     private int DELAY = 1000;
+    private String transitionName;
     RoundCornerProgressBar roundCornerProgressBar;
 
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
+
+
         initUi();
         displayDetails();
+        ivPoster.setTransitionName(transitionName);
         checkDeviceScreen();
     }
 
@@ -44,12 +48,14 @@ public class MovieDetailsActivity extends BaseActivity {
     }
 
     private void displayDetails() {
-        DataItemModel movieItem = getIntent().getParcelableExtra(MOVIE_SELECTED);
+        MovieDetailsModel movieItem = getIntent().getParcelableExtra(MOVIE_SELECTED);
+        transitionName =  getIntent().getStringExtra("TEST");
         float rating = movieItem.getVoteAverage();
         tvRating.setText("" + rating);
         addDelayProgress(rating);
         tvOverView.setText("" + movieItem.getOverview());
         tvTitle.setText(movieItem.getTitle());
+
         setPoster(movieItem.getPosterPath());
     }
 
@@ -69,6 +75,7 @@ public class MovieDetailsActivity extends BaseActivity {
         Picasso.get()
                 .load(photoUrl)
                 .fit()
+                .placeholder(R.drawable.ic_noimage)
                 .into(ivPoster);
     }
 

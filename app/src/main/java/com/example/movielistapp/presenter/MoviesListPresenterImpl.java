@@ -6,7 +6,7 @@ import android.view.View;
 import com.example.movielistapp.BuildConfig;
 import com.example.movielistapp.cloud.AppCloudClient;
 import com.example.movielistapp.cloud.CloudManager;
-import com.example.movielistapp.cloud.responsemodel.fetchmoviedetails.DataItemModel;
+import com.example.movielistapp.cloud.responsemodel.fetchmoviedetails.MovieDetailsModel;
 import com.example.movielistapp.cloud.responsemodel.fetchmovieid.MainResponse;
 import com.example.movielistapp.cloud.responsemodel.fetchmovieid.Result;
 
@@ -49,18 +49,18 @@ public class MoviesListPresenterImpl implements MoviesListPresenter.Presenter {
     public void fetchAllMovieList(final MoviesListPresenter.View mView, String idMovie,final View viewRecycler) {
         if (mView!=null){
             CloudManager manager = AppCloudClient.getClient().create(CloudManager.class);
-            Call<DataItemModel>call = manager.getMovieDetails(idMovie,APIKEY,"en-US");
-            call.enqueue(new Callback<DataItemModel>() {
+            Call<MovieDetailsModel>call = manager.getMovieDetails(idMovie,APIKEY,"en-US");
+            call.enqueue(new Callback<MovieDetailsModel>() {
                 @Override
-                public void onResponse(Call<DataItemModel> call, Response<DataItemModel> response) {
+                public void onResponse(Call<MovieDetailsModel> call, Response<MovieDetailsModel> response) {
                     if (response.isSuccessful()) {
-                        DataItemModel data = response.body();
+                        MovieDetailsModel data = response.body();
                         mView.onFetchMovieDetails(data,viewRecycler);
                     }
                 }
 
                 @Override
-                public void onFailure(Call<DataItemModel> call, Throwable t) {
+                public void onFailure(Call<MovieDetailsModel> call, Throwable t) {
                     if (null != t.getMessage()){
                         mView.onFailureFetchMovieDetails(t.getMessage());
                     }
@@ -73,19 +73,19 @@ public class MoviesListPresenterImpl implements MoviesListPresenter.Presenter {
     public void fetchAllMovieList(final Result result, final MoviesListPresenter.View mView) {
         if (mView!=null){
             CloudManager manager = AppCloudClient.getClient().create(CloudManager.class);
-            Call<DataItemModel>call = manager.getMovieDetails(result.getId().toString(),APIKEY,"en-US");
-            call.enqueue(new Callback<DataItemModel>() {
+            Call<MovieDetailsModel>call = manager.getMovieDetails(result.getId().toString(),APIKEY,"en-US");
+            call.enqueue(new Callback<MovieDetailsModel>() {
                 @Override
-                public void onResponse(Call<DataItemModel> call, Response<DataItemModel> response) {
+                public void onResponse(Call<MovieDetailsModel> call, Response<MovieDetailsModel> response) {
                     if (response.isSuccessful()) {
-                        DataItemModel data = response.body();
-                        result.setDataItemModel(data);
+                        MovieDetailsModel data = response.body();
+                        result.setMovieDetailsModel(data);
                         mView.fetchMovie(result);
                     }
                 }
 
                 @Override
-                public void onFailure(Call<DataItemModel> call, Throwable t) {
+                public void onFailure(Call<MovieDetailsModel> call, Throwable t) {
                     if (null != t.getMessage()){
                         mView.onFailureFetchMovieDetails(t.getMessage());
                     }

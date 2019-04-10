@@ -1,113 +1,108 @@
 package com.example.movielistapp.Movies;
 
 import android.os.Handler;
+import android.text.TextUtils;
 
 import com.example.movielistapp.cloud.AppCloudClient;
 import com.example.movielistapp.cloud.CloudManager;
-import com.example.movielistapp.cloud.responsemodel.fetchmoviedetails.DataItemModel;
+import com.example.movielistapp.cloud.responsemodel.fetchmoviedetails.MovieDetailsModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.example.movielistapp.presenter.MoviesListPresenterImpl.APIKEY;
+import static com.example.movielistapp.ui.activity.MoviesActivity.adapter;
 
 
 public class ApiManagerImpl implements ApiManager {
-    List<MovieItemModel> movieItemModelList;
-    final int NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors();
-    ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_OF_CORES);
-    int mTotalItemCount, mCurrentItem = 0;
-    String mMovieId;
-    CloudManager manager;
-    Call<DataItemModel> call;
-    ApiManager.View managerView;
-    final Handler handler = new Handler();
-    private final int RUN = 1, STOP = 2;
-    private String languageCode = "en-US";
+    private List<MovieItemModel> movieItemModelList=new ArrayList<>();
+    private int mTotalItemCount, mCurrentItem = 0, mode, removedCount = 0;
+    private String mMovieId, languageCode = "en-US";
+    private CloudManager manager = AppCloudClient.getClient().create(CloudManager.class);
+    private Call<MovieDetailsModel> call;
+    private ApiManager.View managerView;
+    private final Handler handler = new Handler();
+    private List<MovieItemModel> movieItemModelListTemp = new ArrayList<>();
 
 
     public ApiManagerImpl(ApiManager.View managerView, List<MovieItemModel> movieItemModelList) {
         this.movieItemModelList = movieItemModelList;
         mTotalItemCount = movieItemModelList.size();
-        manager = AppCloudClient.getClient().create(CloudManager.class);
         this.managerView = managerView;
-
     }
 
     @Override
-    public void fetchDataFromApi(int state) {
-
-
-//        executorService.execute(new Runnable() {
-//            @Override
-//            public void run() {
-
-        if (state == RUN) {
-            if (mCurrentItem < mTotalItemCount) {
-
+    public void fetchDataFromApi() {
+        if (mCurrentItem < mTotalItemCount) {
+            MovieDetailsModel model = movieItemModelList.get(mCurrentItem).getData();
+            if (null == model) {
                 mMovieId = movieItemModelList.get(mCurrentItem).id;
-                call = manager.getMovieDetails(mMovieId,APIKEY, languageCode);
-                call.enqueue(new Callback<DataItemModel>() {
+                call = manager.getMovieDetails(mMovieId, APIKEY, languageCode);
+                call.enqueue(new Callback<MovieDetailsModel>() {
                     @Override
-                    public void onResponse(Call<DataItemModel> call, Response<DataItemModel> response) {
-                        DataItemModel data = response.body();
-                        if (null != data) {
-                            MovieItemModel movieItemModel = new MovieItemModel();
-                            movieItemModel.setData(data);
-                            movieItemModel.setId(mMovieId);
-                            if (managerView != null)
-                                managerView.onSuccesItem(movieItemModel, mCurrentItem);
-                            addDelayApiFetch();
-                        } else {
-                            addDelayApiFetch();
+                    public void onResponse(Call<MovieDetailsModel> call, Response<MovieDetailsModel> response) {
+                        if (response.isSuccessful()) {
+                            MovieDetailsModel data = response.body();
+                            if (data == null ||
+                                    (TextUtils.isEmpty(data.getOverview())) ||
+                                            TextUtils.isEmpty(data.getPosterPath())){
+                                movieItemModelList.set(mCurrentItem, null);
+                                movieItemModelListTemp.add(null);
+                                removedCount++;
+                            }else {
+
+                                movieItemModelList.get(mCurrentItem).setData(data);
+                                movieItemModelList.set(mCurrentItem, movieItemModelList.get(mCurrentItem));
+                                movieItemModelListTemp.add(movieItemModelList.get(mCurrentItem));
+                            }
+                        }else {
+                            movieItemModelList.set(mCurrentItem, null);
+                            movieItemModelListTemp.add(null);
+                            removedCount++;
                         }
+                        mode = mCurrentItem % 5;
+
+                        while (movieItemModelListTemp.remove(null)){}
+
+                        if (mCurrentItem != 0 && mode == 0) {
+                            if (managerView!=null){
+                              //  managerView.onSuccesItem(movieItemModelListTemp.get(mCurrentItem),mCurrentItem,movieItemModelListTemp);
+                                adapter.setMovieDataList(movieItemModelListTemp);
+                            }
+                        }else if ((mCurrentItem) == (mTotalItemCount - mode) + removedCount) {
+                            if (managerView!=null){
+                               // managerView.onSuccesItem(null,mCurrentItem,movieItemModelListTemp);
+                                adapter.setMovieDataList(movieItemModelListTemp);
+                            }
+                        }
+                        mCurrentItem++;
+                        Handler handler = new Handler();
+                        handler.postDelayed(() -> addDelayApiFetch(), 100);
+
                     }
 
                     @Override
-                    public void onFailure(Call<DataItemModel> call, Throwable t) {
-                        if (null != t.getMessage()) {
+                    public void onFailure(Call<MovieDetailsModel> call, Throwable t) {
+
+
+                        if (null == t.getMessage()) {
                             managerView.onFailure(t.getMessage());
-                            addDelayApiFetch();
                         }
                     }
                 });
             }
-
-
         }
-
-//            }
-//        });
-
-
     }
+
 
     private void addDelayApiFetch() {
-        mCurrentItem++;
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                fetchDataFromApi(RUN);
-            }
-        }, 300);
+        fetchDataFromApi();
+       // handler.postDelayed(() -> fetchDataFromApi(), 0);
     }
 
-    @Override
-    public void refreshList() {
-        fetchDataFromApi(STOP);
-        mCurrentItem = 0;
-        mTotalItemCount = 0;
-        if (movieItemModelList != null)
-            movieItemModelList.clear();
-        mTotalItemCount = 0;
-        manager = null;
-        managerView = null;
-        return;
-    }
+
 }

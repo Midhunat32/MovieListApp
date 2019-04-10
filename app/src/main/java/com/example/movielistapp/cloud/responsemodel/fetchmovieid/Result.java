@@ -1,6 +1,6 @@
 package com.example.movielistapp.cloud.responsemodel.fetchmovieid;
 
-import com.example.movielistapp.cloud.responsemodel.fetchmoviedetails.DataItemModel;
+import com.example.movielistapp.cloud.responsemodel.fetchmoviedetails.MovieDetailsModel;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -11,14 +11,14 @@ public class Result {
     @SerializedName("adult")
     @Expose
     private Boolean adult;
-    private DataItemModel dataItemModel;
+    private MovieDetailsModel movieDetailsModel;
 
-    public DataItemModel getDataItemModel() {
-        return dataItemModel;
+    public MovieDetailsModel getMovieDetailsModel() {
+        return movieDetailsModel;
     }
 
-    public void setDataItemModel(DataItemModel dataItemModel) {
-        this.dataItemModel = dataItemModel;
+    public void setMovieDetailsModel(MovieDetailsModel movieDetailsModel) {
+        this.movieDetailsModel = movieDetailsModel;
     }
 
 

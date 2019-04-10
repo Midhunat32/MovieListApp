@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class DataItemModel implements Parcelable {
+public class MovieDetailsModel implements Parcelable {
     @SerializedName("adult")
     @Expose
     private Boolean adult;
@@ -85,7 +85,7 @@ public class DataItemModel implements Parcelable {
     @Expose
     private Integer voteCount;
 
-    public DataItemModel(Parcel in) {
+    public MovieDetailsModel(Parcel in) {
         byte tmpAdult = in.readByte();
         adult = tmpAdult == 0 ? null : tmpAdult == 1;
         backdropPath = in.readString();
@@ -133,20 +133,23 @@ public class DataItemModel implements Parcelable {
         }
     }
 
-    public static final Creator<DataItemModel> CREATOR = new Creator<DataItemModel>() {
+    public static final Creator<MovieDetailsModel> CREATOR = new Creator<MovieDetailsModel>() {
         @Override
-        public DataItemModel createFromParcel(Parcel in) {
-            return new DataItemModel(in);
+        public MovieDetailsModel createFromParcel(Parcel in) {
+            return new MovieDetailsModel(in);
         }
 
         @Override
-        public DataItemModel[] newArray(int size) {
-            return new DataItemModel[size];
+        public MovieDetailsModel[] newArray(int size) {
+            return new MovieDetailsModel[size];
         }
     };
 
-    public DataItemModel() {
+    public MovieDetailsModel() {
 
+    }
+    public MovieDetailsModel(String title) {
+        this.title =title;
     }
 
     public Boolean getAdult() {
